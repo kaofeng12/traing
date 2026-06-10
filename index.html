@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的增肌紀錄本</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 500px; margin: auto; background: #f4f4f9; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .log-item { background: white; margin-top: 10px; padding: 10px; border-radius: 5px; border-left: 5px solid #28a745; }
+    </style>
+</head>
+<body>
+
+    <h2>💪 健身紀錄</h2>
+    <div class="card">
+        <input type="date" id="date">
+        <input type="text" id="part" placeholder="部位 (如: 推、拉、腿)">
+        <input type="text" id="exercise" placeholder="動作名稱">
+        <input type="number" id="weight" placeholder="重量 (kg)">
+        <input type="number" id="reps" placeholder="次數">
+        <button onclick="saveLog()">儲存紀錄</button>
+    </div>
+
+    <h3>歷史紀錄</h3>
+    <div id="logList"></div>
+
+    <script>
+        function saveLog() {
+            const log = {
+                date: document.getElementById('date').value,
+                part: document.getElementById('part').value,
+                exercise: document.getElementById('exercise').value,
+                weight: document.getElementById('weight').value,
+                reps: document.getElementById('reps').value
+            };
+            let logs = JSON.parse(localStorage.getItem('gymLogs') || '[]');
+            logs.unshift(log);
+            localStorage.setItem('gymLogs', JSON.stringify(logs));
+            renderLogs();
+        }
+
+        function renderLogs() {
+            const list = document.getElementById('logList');
+            const logs = JSON.parse(localStorage.getItem('gymLogs') || '[]');
+            list.innerHTML = logs.map(l => `
+                <div class="log-item">
+                    <strong>${l.date} - ${l.part}</strong><br>
+                    ${l.exercise}: ${l.weight}kg x ${l.reps}
+                </div>
+            `).join('');
+        }
+        
+        document.getElementById('date').valueAsDate = new Date();
+        renderLogs();
+    </script>
+</body>
+</html>
